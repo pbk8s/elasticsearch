@@ -8,7 +8,7 @@ from elasticsearch import Elasticsearch
 
 from config import *
 
-es = Elasticsearch()
+es = Elasticsearch([{'host' : 'clusterIP', 'port' : 9200}])
 
 
 class TweetStreamListener(StreamListener):
@@ -22,6 +22,7 @@ class TweetStreamListener(StreamListener):
 
         tweet = TextBlob(dict_data["text"])
 
+        print ("Gathering live tweets...")
 
         if tweet.sentiment.polarity < 0:
             sentiment = "negative"
@@ -29,7 +30,6 @@ class TweetStreamListener(StreamListener):
             sentiment = "neutral"
         else:
             sentiment = "positive"
-
 
         es.index(index="sentiment",
                  doc_type="test-type",
